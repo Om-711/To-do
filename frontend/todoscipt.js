@@ -24,10 +24,24 @@
 
 const params = new URLSearchParams(window.location.search)
 const savedUser = JSON.parse(localStorage.getItem("user") || "null")
-const userID = params.get("userID") || savedUser?.userId
+const userID = (params.get("userID") || savedUser?.userId || "").trim()
+
+function ensureUserSelected() {
+    if (!userID) {
+        alert("User not found. Please create/select a user first.")
+        return false
+    }
+    return true
+}
 
 
 async function loadTask(){
+    if (!userID) {
+        const ul = document.getElementById("task-list")
+        ul.innerHTML = "<li>Please create/select a user first.</li>"
+        return
+    }
+
     const response = await axios.get("http://localhost:3000/tasks/" + userID)
     const tasks = response.data.task
 
@@ -63,6 +77,8 @@ async function loadTask(){
 
 }
 async function todo(){
+    if (!ensureUserSelected()) return
+
     const input = document.getElementById("text")
     const text = input.value.trim()
     if (!text) return
@@ -73,7 +89,7 @@ async function todo(){
     })
 
     input.value = ""
-    loadTask()
+    await loadTask()
 }
 
 if (userID) loadTask()
