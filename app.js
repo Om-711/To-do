@@ -48,6 +48,14 @@ app.get("/tasks/:userID", async function(req, res){
 });
 
 app.post("/task", async function(req, res){
+    if (!req.body.userId || !mongoose.Types.ObjectId.isValid(req.body.userId)) {
+        return res.status(400).json({ message: "Valid userId is required" })
+    }
+
+    if (!req.body.content || !req.body.content.trim()) {
+        return res.status(400).json({ message: "content is required" })
+    }
+
     const task = await Task.create({ 
         userId: req.body.userId, 
         content: (req.body.content || "").trim(), 
