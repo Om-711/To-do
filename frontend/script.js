@@ -26,5 +26,6 @@ async function DisplayUser(){
         list += "Name: " + users[i].name + "<br>Email-ID: " + users[i].email + "<br><br>";
     }
 
+    
     div.innerHTML = list
 };
